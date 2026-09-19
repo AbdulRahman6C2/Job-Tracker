@@ -1,4 +1,3 @@
--- schema.sql
 CREATE TABLE applications (
     id SERIAL PRIMARY KEY,
     company VARCHAR(150) NOT NULL,
@@ -13,6 +12,5 @@ CREATE TABLE applications (
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
--- Index for the dashboard's status filtering/counting
 CREATE INDEX idx_applications_status ON applications(status);
 CREATE INDEX idx_applications_date ON applications(date_applied);
