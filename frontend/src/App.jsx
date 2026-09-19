@@ -23,20 +23,42 @@ function App() {
   }
 
   useEffect(() => {
-  // Fetching data once on mount is a standard, valid effect use case —
-  // this rule is overly strict for this pattern (see React docs on data fetching).
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  loadApplications();
-}, []);
+    let cancelled = false;
+
+    async function loadInitialApplications() {
+      try {
+        const data = await getApplications();
+
+        if (cancelled) return;
+
+        setApplications(data);
+        setError(null);
+      } catch (err) {
+        if (!cancelled) {
+          setError(err.message);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadInitialApplications();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function handleAdd(formData) {
     await createApplication(formData);
-    loadApplications();
+    await loadApplications();
   }
 
   async function handleDelete(id) {
     await deleteApplication(id);
-    loadApplications();
+    await loadApplications();
   }
 
   return (
@@ -45,7 +67,11 @@ function App() {
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <Dashboard applications={applications} />
       <ApplicationForm onAdd={handleAdd} />
-      {loading ? <p>Loading...</p> : <ApplicationList applications={applications} onDelete={handleDelete} />}
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <ApplicationList applications={applications} onDelete={handleDelete} />
+      )}
     </div>
   );
 }
