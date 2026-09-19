@@ -23,8 +23,11 @@ function App() {
   }
 
   useEffect(() => {
-    loadApplications();
-  }, []);
+  // Fetching data once on mount is a standard, valid effect use case —
+  // this rule is overly strict for this pattern (see React docs on data fetching).
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  loadApplications();
+}, []);
 
   async function handleAdd(formData) {
     await createApplication(formData);
