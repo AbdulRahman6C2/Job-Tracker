@@ -1,4 +1,5 @@
-const BASE_URL = 'http://localhost:3001/applications';
+// const BASE_URL = 'http://localhost:3001/applications'; // for normal development
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/applications'; //for render delpoyment
 
 export async function getApplications() {
   const res = await fetch(BASE_URL);
